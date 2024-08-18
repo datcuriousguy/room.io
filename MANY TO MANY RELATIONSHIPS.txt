@@ -1,0 +1,5 @@
+first_name, last_name, student_id
+student_id, ac, fan
+student_id, ac_temp_preference, fan_speed_preference
+student_id, bedtime_preference
+student_id, hobbies
