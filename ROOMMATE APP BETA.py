@@ -7,8 +7,8 @@ from flask_cors import CORS
 
 db_connection = mysql.connector.connect(
     host="localhost",
-    user="root",
-    password="Hayabusa@2004",
+    user="your-username",
+    password="your-password",
     database="roommate"
 )
 
