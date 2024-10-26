@@ -26,3 +26,4 @@ However, given a sample database with the following partially populated tables;
 
 ... the backend is fully functional.
 
+Note: You can view screenshots of the outputs of each function here: https://docs.google.com/document/d/146p-mP2d7_owVn99L0zOdFV5vVKYnuUAZZcawBClw-o/edit?usp=sharing
