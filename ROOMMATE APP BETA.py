@@ -54,8 +54,37 @@ OCTOBER 29TH 2024:
   
   """
 
+
+"""
+November 2nd, 2024:
+
+Learnt the importance of creating a db connection for each function and closing it. Without the code
+
+db_connection = mysql.connector.connect(
+        host="localhost",
+        user="your_mysql_username",
+        password="your_mysql_password",
+        database="roommate_app"
+    )
+
+    cur = db_connection.cursor()
+    
+... the helper-function get_student_id_by_gender(gender) would only let me call* get_student_id_by_bedtime_preference()
+once - the second call and any call after that would result in an -out-of-sync- db error. I used print statements and
+error log checking to link the problem to this helper function and the fact that it was using the global db-connection
+because it did not have its own. Find more in the commit on Nov 2 2024
+ 
+"""
 # @app.route('/get_student_ids_by_gender', methods=['GET', 'POST'])
 def get_student_ids_by_gender(gender):
+    db_connection = mysql.connector.connect(
+        host="localhost",
+        user="your_mysql_username",
+        password="your_mysql_password",
+        database="roommate_app"
+    )
+
+    cur = db_connection.cursor()
     student_ids_of_gender = cur.execute(
         f"SELECT student_id, first_name, last_name FROM student_info WHERE gender = '{gender}';'")
     student_ids_of_gender_fetchall = cur.fetchall()
@@ -65,11 +94,24 @@ def get_student_ids_by_gender(gender):
         student_ids_of_chosen_gender_list.append(student_id_of_chosen_gender)
         #print(student_id_of_chosen_gender)
     # I used this line for testing the function in isolation: print(student_ids_of_chosen_gender_list)
+    cur.close()
+    db_connection.close()
     return student_ids_of_chosen_gender_list
 
 
 @app.route('/get_student_id_by_bedtime_preference', methods=['GET', 'POST'])
-def get_student_id_by_bedtime_preference(gender, bedtime_preference):
+def get_student_id_by_bedtime_preference():
+
+    data = request.get_json()
+
+    if data is None:
+        print('no data received')
+    else:
+        gender = data.get('gender')
+        bedtime_preference = data.get('bedtime_preference')
+
+    print(f'bedtime preference: {bedtime_preference}')
+    print(f'gender: {gender}')
 
     db_connection = mysql.connector.connect(
         host="localhost",
@@ -77,25 +119,41 @@ def get_student_id_by_bedtime_preference(gender, bedtime_preference):
         password="your_mysql_password",
         database="roommate_app"
     )
-
+    #print('db connection successful')
     cur = db_connection.cursor()
     student_info = get_student_ids_by_gender(gender)
     print(f'Students with bedtime {bedtime_preference}:00\n\nStudent_id | Name\n\n')
     for student_info_row in student_info:
+        db_connection = mysql.connector.connect(
+            host="localhost",
+            user="your_mysql_username",
+            password="your_mysql_password",
+            database="roommate_app"
+        )
+        # print('db connection successful')
+        cur = db_connection.cursor()
         student_info_row_id = student_info_row[0]
         student_info_row_first_name = student_info_row[1]
         student_info_row_last_name = student_info_row[2]
         db_statement = f"SELECT * FROM student_id_bedtime_preference_map where student_id = {student_info_row_id} AND bedtime_preference = {bedtime_preference};"
         cur.execute(db_statement)
         student_info_row_fetchall = cur.fetchall()
+
+        db_connection.close()
+        cur.close()
+
         for student_info_row_fetchall_row in student_info_row_fetchall:
+
             print(f'{student_info_row_id} | {student_info_row_first_name} {student_info_row_last_name}')
+        cur.close()
+        db_connection.close()
 
         # student_ids_with_specified_bedtime_fetchall = cur.fetchall()
         # print(student_ids_with_specified_bedtime_fetchall)
         # for student_id in student_ids_with_specified_bedtime_fetchall:
         #     print(f'{student_ids[0]} {student_ids[1]} prefers bedtime {bedtime_preference}.')
-        return student_info_row_fetchall
+    #print(student_info_row_fetchall)
+    return student_info_row_fetchall
 
 
 @app.route('/get_student_id_by_ac_fan_preference', methods=['GET', 'POST'])
