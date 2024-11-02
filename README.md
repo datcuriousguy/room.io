@@ -1,4 +1,4 @@
-Welcome to ROOMMATE-ALLOCATION-APP.
+Welcome to room.io
 
 This was originally the idea for my COMP350 Course group final project, but because my group changed the objective to another app (find that here: https://github.com/datcuriousguy/monty-s-magicians), I decided to pursue and rebuild this one from scratch myself.
 
