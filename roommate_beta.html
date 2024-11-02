@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>room.io</title>
+    <link rel="stylesheet" href="roommate_beta.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>room.io</h1>
+            <p>Find your ideal roommate based on preferences</p>
+        </header>
+
+        <section class="tiles">
+            <div class="tile">
+                <h2>Bedtime Preference</h2>
+                <p>Find students with similar bedtime habits.</p>
+                <button id="get_student_id_by_bedtime_preference_button_id" onclick="get_student_id_by_bedtime_preference()">Search by Bedtime</button>
+                <div id="bedtimeOptions" class="options" style="display: block;">
+                    <label for="bedtime">Select Bedtime:</label>
+                    <select id="bedtime">
+                        <option value="21">21:00</option>
+                        <option value="22">22:00</option>
+                        <option value="23">23:00</option>
+                        <option value="00">Midnight</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="tile">
+                <h2>AC & Fan Preference</h2>
+                <p>Match students based on air conditioning and fan preferences.</p>
+                <button id="get_student_id_by_ac_fan_preference_button_id" onclick="fetchAcFan()">Search by AC/Fan</button>
+                <div id="acFanOptions" class="options" style="display: block;">
+                    <label for="acFan">Select Preference:</label>
+                    <select id="acFan">
+                        <option value="acOnly">AC Only</option>
+                        <option value="fanOnly">Fan Only</option>
+                        <option value="both">Both AC & Fan</option>
+                        <option value="both">Neither AC nor Fan</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="tile">
+                <h2>AC Temperature Preference</h2>
+                <p>Find students with similar AC temperature settings.</p>
+                <button id="get_student_id_by_ac_temp_button_id" onclick="fetchAcTemp()">Search by AC Temp</button>
+                <div id="acFanOptions" class="options" style="display: block;">
+                    <label for="acTemp">Select Preference:</label>
+                    <select id="acTemp">
+                        <option value="21">21</option>
+                        <option value="22">22</option>
+                        <option value="23">23</option>
+                        <option value="24">24</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="tile">
+                <h2>Select Roommate</h2>
+                <p>Select your preferred roommate.</p>
+                <button onclick="selectRoommate()">Choose Roommate</button>
+                <div id="roommateSelection" class="options" style="display: block;">
+                    <label for="roommate">Enter Roommate ID:</label>
+                    <input type="text" id="roommate" placeholder="Roommate ID">
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="roommate_beta.js"></script>
+</body>
+</html>
