@@ -26,7 +26,6 @@ db_connection = mysql.connector.connect(
 
 cur = db_connection.cursor()
 
-
 # @app.route('/login', methods=['GET', 'POST'])
 # def login():
 #     data = request.get_json()
@@ -51,9 +50,8 @@ cur = db_connection.cursor()
 """
 OCTOBER 29TH 2024:
   I have added GET and POST methods for most functions for redundancy though any one of GET or  POST could be used.
-  
-  """
 
+  """
 
 """
 November 2nd, 2024:
@@ -68,13 +66,15 @@ db_connection = mysql.connector.connect(
     )
 
     cur = db_connection.cursor()
-    
+
 ... the helper-function get_student_id_by_gender(gender) would only let me call* get_student_id_by_bedtime_preference()
 once - the second call and any call after that would result in an -out-of-sync- db error. I used print statements and
 error log checking to link the problem to this helper function and the fact that it was using the global db-connection
 because it did not have its own. Find more in the commit on Nov 2 2024
- 
+
 """
+
+
 # @app.route('/get_student_ids_by_gender', methods=['GET', 'POST'])
 def get_student_ids_by_gender(gender):
     db_connection = mysql.connector.connect(
@@ -92,7 +92,7 @@ def get_student_ids_by_gender(gender):
     student_ids_of_chosen_gender_list = []
     for student_id_of_chosen_gender in student_ids_of_chosen_gender:
         student_ids_of_chosen_gender_list.append(student_id_of_chosen_gender)
-        #print(student_id_of_chosen_gender)
+        # print(student_id_of_chosen_gender)
     # I used this line for testing the function in isolation: print(student_ids_of_chosen_gender_list)
     cur.close()
     db_connection.close()
@@ -101,7 +101,6 @@ def get_student_ids_by_gender(gender):
 
 @app.route('/get_student_id_by_bedtime_preference', methods=['GET', 'POST'])
 def get_student_id_by_bedtime_preference():
-
     data = request.get_json()
 
     if data is None:
@@ -110,7 +109,7 @@ def get_student_id_by_bedtime_preference():
         gender = data.get('gender')
         bedtime_preference = data.get('bedtime_preference')
 
-    print(f'bedtime preference: {bedtime_preference}')
+    # print(f'bedtime preference: {bedtime_preference}')
     print(f'gender: {gender}')
 
     db_connection = mysql.connector.connect(
@@ -119,7 +118,7 @@ def get_student_id_by_bedtime_preference():
         password="your_mysql_password",
         database="roommate_app"
     )
-    #print('db connection successful')
+    # print('db connection successful')
     cur = db_connection.cursor()
     student_info = get_student_ids_by_gender(gender)
     print(f'Students with bedtime {bedtime_preference}:00\n\nStudent_id | Name\n\n')
@@ -143,7 +142,6 @@ def get_student_id_by_bedtime_preference():
         cur.close()
 
         for student_info_row_fetchall_row in student_info_row_fetchall:
-
             print(f'{student_info_row_id} | {student_info_row_first_name} {student_info_row_last_name}')
         cur.close()
         db_connection.close()
@@ -152,148 +150,160 @@ def get_student_id_by_bedtime_preference():
         # print(student_ids_with_specified_bedtime_fetchall)
         # for student_id in student_ids_with_specified_bedtime_fetchall:
         #     print(f'{student_ids[0]} {student_ids[1]} prefers bedtime {bedtime_preference}.')
-    #print(student_info_row_fetchall)
+    # print(student_info_row_fetchall)
     return student_info_row_fetchall
 
 
 @app.route('/get_student_id_by_ac_fan_preference', methods=['GET', 'POST'])
-def get_student_id_by_ac_fan_preference(gender, ac_fan_preference):
-    """
-        add if statement to use conditions:
+def get_student_id_by_ac_fan_preference():
+    data = request.get_json()
 
-        'ac'                  (=1)
-        'fan'                 (=1)
-        'ac and fan'          (both = 1)
-        'none of ac and fan'  (=0)
+    if data is None:
+        print('no data received')
+    else:
+        gender = data.get('gender')
+        ac_fan_preference = data.get('ac_fan_preference')
+        print(ac_fan_preference)
+        """
+            add if statement to use conditions:
 
-        ... for the function
+            'ac'                  (=1)
+            'fan'                 (=1)
+            'ac and fan'          (both = 1)
+            'none of ac and fan'  (=0)
 
-        get_student_id_by_ac_fan_preference()
+            ... for the function
+
+            get_student_id_by_ac_fan_preference()
+            """
+
+        """
+        The 4 possible calls of get_student_id_by_ac_fan_preference(ac_fan_preference) are:
+
+            get_student_id_by_ac_fan_preference(('ac', ''))
+            get_student_id_by_ac_fan_preference(('', 'fan'))
+            get_student_id_by_ac_fan_preference(('ac', 'fan'))
+            get_student_id_by_ac_fan_preference(('', ''))
+
         """
 
-    """
-    The 4 possible calls of get_student_id_by_ac_fan_preference(ac_fan_preference) are:
+        db_connection = mysql.connector.connect(
+            host="localhost",
+            user="your_mysql_username",
+            password="your_mysql_password",
+            database="roommate_app"
+        )
 
-        get_student_id_by_ac_fan_preference(('ac', ''))
-        get_student_id_by_ac_fan_preference(('', 'fan'))
-        get_student_id_by_ac_fan_preference(('ac', 'fan'))
-        get_student_id_by_ac_fan_preference(('', ''))
+        cur = db_connection.cursor()
 
-    """
+        if ac_fan_preference == "both":
+            print('\n\nStudents Using Both A/C & Fan:\n\n')
+            student_info = get_student_ids_by_gender(gender)
 
-    db_connection = mysql.connector.connect(
-        host="localhost",
-        user="your_mysql_username",
-        password="your_mysql_password",
-        database="roommate_app"
-    )
+            for student_info_row in student_info:
+                student_info_row_id = student_info_row[0]
+                student_info_row_first_name = student_info_row[1]
+                student_info_row_last_name = student_info_row[2]
 
-    cur = db_connection.cursor()
+                db_connection = mysql.connector.connect(
+                    host="localhost",
+                    user="your_mysql_username",
+                    password="your_mysql_password",
+                    database="roommate_app"
+                )
 
-    if ac_fan_preference == ('ac', 'fan'):
-        print('Students Using Both A/C & Fan:\n\n')
-        student_info = get_student_ids_by_gender(gender)
+                cur = db_connection.cursor()
+                student_ids = cur.execute(
+                    f'SELECT student_id FROM student_id_ac_fan_map WHERE ac = 1 AND fan = 1 AND student_id = {student_info_row_id};')
+                student_ids = cur.fetchall()
+                for student_id in student_ids:
+                    print(f'{student_info_row_id} | {student_info_row_first_name} {student_info_row_last_name}')
+            cur.close()
+            return student_ids
 
-        for student_info_row in student_info:
-            student_info_row_id = student_info_row[0]
-            student_info_row_first_name = student_info_row[1]
-            student_info_row_last_name = student_info_row[2]
+        elif ac_fan_preference == 'ac':
 
-            db_connection = mysql.connector.connect(
-                host="localhost",
-                user="your_mysql_username",
-                password="your_mysql_password",
-                database="roommate_app"
-            )
+            print('\n\nStudents Using Only A/C:\n\n')
 
-            cur = db_connection.cursor()
-            student_ids = cur.execute(
-                f'SELECT student_id FROM student_id_ac_fan_map WHERE {ac_fan_preference[0]} = 1 AND {ac_fan_preference[1]} = 1 AND student_id = {student_info_row_id};')
-            student_ids = cur.fetchall()
-            for student_id in student_ids:
-                print(f'{student_info_row_id} | {student_info_row_first_name} {student_info_row_last_name}')
-        cur.close()
+            student_info = get_student_ids_by_gender(gender)
 
-    elif ac_fan_preference == ('ac', ''):
+            for student_info_row in student_info:
+                student_info_row_id = student_info_row[0]
+                student_info_row_first_name = student_info_row[1]
+                student_info_row_last_name = student_info_row[2]
 
-        print('Students Using Only A/C:\n\n')
-
-        student_info = get_student_ids_by_gender(gender)
-
-        for student_info_row in student_info:
-            student_info_row_id = student_info_row[0]
-            student_info_row_first_name = student_info_row[1]
-            student_info_row_last_name = student_info_row[2]
-
-            db_connection = mysql.connector.connect(
-                host="localhost",
-                user="your_mysql_username",
-                password="your_mysql_password",
-                database="roommate_app"
-            )
-            cur = db_connection.cursor()
-            statement = f'SELECT student_id FROM student_id_ac_fan_map WHERE ac = 1 AND fan = 0 AND student_id = {student_info_row_id};'
-            student_ids = cur.execute(
-                statement)
-            # print(statement) used to diagnose errors with the statement.
-            student_ids = cur.fetchall()
-            for student_id in student_ids:
-                print(f'{student_info_row_id} | {student_info_row_first_name} {student_info_row_last_name}')
-        cur.close()
+                db_connection = mysql.connector.connect(
+                    host="localhost",
+                    user="your_mysql_username",
+                    password="your_mysql_password",
+                    database="roommate_app"
+                )
+                cur = db_connection.cursor()
+                statement = f'SELECT student_id FROM student_id_ac_fan_map WHERE ac = 1 AND fan = 0 AND student_id = {student_info_row_id};'
+                student_ids = cur.execute(
+                    statement)
+                # print(statement) used to diagnose errors with the statement.
+                student_ids = cur.fetchall()
+                for student_id in student_ids:
+                    print(f'{student_info_row_id} | {student_info_row_first_name} {student_info_row_last_name}')
+            cur.close()
+            return student_ids
 
 
 
-    elif ac_fan_preference == ('', 'fan'):
-        print('Students Using Only Fans:\n\n')
-        student_info = get_student_ids_by_gender(gender)
-        for student_info_row in student_info:
+        elif ac_fan_preference == 'fan':
+            print('\n\nStudents Using Only Fans:\n\n')
+            student_info = get_student_ids_by_gender(gender)
+            for student_info_row in student_info:
 
-            student_info_row_id = student_info_row[0]
-            student_info_row_first_name = student_info_row[1]
-            student_info_row_last_name = student_info_row[2]
+                student_info_row_id = student_info_row[0]
+                student_info_row_first_name = student_info_row[1]
+                student_info_row_last_name = student_info_row[2]
 
-            db_connection = mysql.connector.connect(
-                host="localhost",
-                user="your_mysql_username",
-                password="your_mysql_password",
-                database="roommate_app"
-            )
+                db_connection = mysql.connector.connect(
+                    host="localhost",
+                    user="your_mysql_username",
+                    password="your_mysql_password",
+                    database="roommate_app"
+                )
 
-            cur = db_connection.cursor()
-            student_ids = cur.execute(
-                f'SELECT student_id FROM student_id_ac_fan_map WHERE ac = 0 AND fan = 1 AND student_id = {student_info_row_id};')
-            student_ids = cur.fetchall()
-            for student_id in student_ids:
-                print(f'{student_info_row_id} | {student_info_row_first_name} {student_info_row_last_name}')
-        cur.close()
+                cur = db_connection.cursor()
+                student_ids = cur.execute(
+                    f'SELECT student_id FROM student_id_ac_fan_map WHERE ac = 0 AND fan = 1 AND student_id = {student_info_row_id};')
+                student_ids = cur.fetchall()
+                for student_id in student_ids:
+                    print(f'{student_info_row_id} | {student_info_row_first_name} {student_info_row_last_name}')
+            cur.close()
+            return student_ids
 
 
-    else:
-        print('Students Using Neither A/C Nor Fan:\n\n')
-        student_info = get_student_ids_by_gender(gender)
-        for student_info_row in student_info:
+        else:
+            print('\n\nStudents Using Neither A/C Nor Fan:\n\n')
+            student_info = get_student_ids_by_gender(gender)
+            for student_info_row in student_info:
 
-            student_info_row_id = student_info_row[0]
-            student_info_row_first_name = student_info_row[1]
-            student_info_row_last_name = student_info_row[2]
+                student_info_row_id = student_info_row[0]
+                student_info_row_first_name = student_info_row[1]
+                student_info_row_last_name = student_info_row[2]
 
-            db_connection = mysql.connector.connect(
-                host="localhost",
-                user="your_mysql_username",
-                password="your_mysql_password",
-                database="roommate_app"
-            )
+                db_connection = mysql.connector.connect(
+                    host="localhost",
+                    user="your_mysql_username",
+                    password="your_mysql_password",
+                    database="roommate_app"
+                )
 
-            cur = db_connection.cursor()
-            student_ids = cur.execute(
-                f'SELECT student_id FROM student_id_ac_fan_map WHERE ac = 0 AND fan = 0 AND  student_id = {student_info_row_id};')
-            student_ids = cur.fetchall()
-            for student_id in student_ids:
-                print(f'{student_info_row_id} | {student_info_row_first_name} {student_info_row_last_name}')
-        cur.close()
+                cur = db_connection.cursor()
+                student_ids = cur.execute(
+                    f'SELECT student_id FROM student_id_ac_fan_map WHERE ac = 0 AND fan = 0 AND  student_id = {student_info_row_id};')
+                student_ids = cur.fetchall()
+                for student_id in student_ids:
+                    print(f'{student_info_row_id} | {student_info_row_first_name} {student_info_row_last_name}')
+            cur.close()
+            return student_ids
 
-        # student_ids = cur.execute(
-        #                 f'SELECT student_id FROM student_id_ac_fan_map WHERE ac = 0 AND fan = 0 AND student_id = {student_info_row_id};')
+            # student_ids = cur.execute(
+            #                 f'SELECT student_id FROM student_id_ac_fan_map WHERE ac = 0 AND fan = 0 AND student_id = {student_info_row_id};')
 
 
 # function to search students who have both an ac and fan preference:
@@ -379,36 +389,36 @@ def select_roommate_preference(student_id, roommate_id, room_number):
         2. get_student_id_by_bedtime_preference(gender, bedtime_preference)
         3. get_student_id_by_ac_fan_preference(gender, ac_fan_preference)
         4. get_student_id_by_ac_temp(ac_temp_preference)
-    
+
     ____________________________________________________________________________________________________________________
     • Though I have tested all the functions and compared them to database values, I strongly encourage anyone to reach out 
     incase any discrepancies are discovered.
     ____________________________________________________________________________________________________________________
 
     /// NoteS: ///
-    
+
     • The function get_student_ids_by_gender(gender) only returns a list of ids without printing it. However, 
     should you want to test the function and see the returned list of ids, you can un-comment the print-statement 
     above the return statement. 
-    
+
     • Only one out of the above functions can be called at a time.
-    
+
     • The commented functions below can be run, but note that the 3rd commented function from the top is set to ('ac', '') as an example.
       You can change the values of the tuple to:
-      
+
       ('', 'fan')
       ('ac', '')   ---> current option
       ('', '')
       ('ac', 'fan')
-      
+
       and obtain the students of a chosen gender with the ac/fan preference of your choice.
 
 """
 
-#get_student_ids_by_gender('M')
-#get_student_id_by_bedtime_preference('F', 23)
-#get_student_id_by_ac_fan_preference('F', ('ac', ''))
-#get_student_id_by_ac_temp('M', 23)
+# get_student_ids_by_gender('M')
+# get_student_id_by_bedtime_preference('F', 23)
+# get_student_id_by_ac_fan_preference('F', ('ac', ''))
+# get_student_id_by_ac_temp('M', 23)
 
 if __name__ == "__main__":
     app.run(debug=True)
