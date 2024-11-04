@@ -32,14 +32,14 @@
             <div class="tile">
                 <h2>AC & Fan Preference</h2>
                 <p>Match students based on air conditioning and fan preferences.</p>
-                <button id="get_student_id_by_ac_fan_preference_button_id" onclick="fetchAcFan()">Search by AC/Fan</button>
+                <button id="get_student_id_by_ac_fan_preference_button_id" onclick="get_student_id_by_ac_fan_preference()">Search by AC/Fan</button>
                 <div id="acFanOptions" class="options" style="display: block;">
                     <label for="acFan">Select Preference:</label>
                     <select id="acFan">
                         <option value="acOnly">AC Only</option>
                         <option value="fanOnly">Fan Only</option>
                         <option value="both">Both AC & Fan</option>
-                        <option value="both">Neither AC nor Fan</option>
+                        <option value="none">Neither AC nor Fan</option>
                     </select>
                 </div>
             </div>
